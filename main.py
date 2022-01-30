@@ -1,11 +1,15 @@
 import regex as re
-import httpx,time
+import httpx,time,random
+from faker import Faker
+fake = Faker()
 
-
-twocap = ''
+apikey = 'apikey'
+catchall = 'catchall'
+user=fake.first_name() + str(random.randint(10,99))
+email = user + '@' + catchall
 
 def create():
-	
+
 	header1 = {
         "Host": "discord.com",
         "Connection": "keep-alive",
@@ -27,27 +31,35 @@ def create():
 	y = re.findall(r'sdcfduid=(\w+);', cookies)[0]
 
 
+
+
 	res = httpx.get("https://discord.com/api/v9/experiments", timeout=15)
 	if res.text == "":
 		return True
 		print()
 	else:
 		fingerprint = res.json()['fingerprint']
-	print(fingerprint)
 
-	solver = httpx.post(f'http://2captcha.com/in.php?key={twocap}&method=hcaptcha&sitekey=4c672d35-0701-42b2-88c3-78380b0db560&pageurl=discord.com&json=1')
-	solverid = solver.json()['request']
-	time.sleep(20)
+	sendreq = httpx.post(f'http://2captcha.com/in.php?key={apikey}&method=hcaptcha&sitekey=4c672d35-0701-42b2-88c3-78380b0db560&pageurl=http://discord.com&json=1')
+	solverid = sendreq.json()['request']
 
-	getcaptcha = httpx.get(f'http://2captcha.com/res.php?key={twocap}&action=get&id={solverid}')
+	time.sleep(10)
 
-	captchakey = getcaptcha.json()['request']
-	print(captchakey)
+	while True:
+		try:
+			captchares = httpx.get(f'http://2captcha.com/res.php?key={apikey}&action=get&id={solverid}&json=1')
+			capstatus = captchares.json()['status']
+			if capstatus == 0:
+				raise Exception
+			else:
+				captchakey = captchares.json()['request']
+		except Exception:
+			time.sleep(5)
+		else:
+			break
 
 
-'''
-	
-	headers2 = {
+	header2={
 
         "Host": "discord.com",
         "Connection": "keep-alive",
@@ -67,31 +79,31 @@ def create():
         "Referer": "https://discord.com/register",
         "X-Debug-Options": "bugReporterEnabled",
         "Accept-Encoding": "gzip, deflate, br",
-        "Cookie": f"__dcfduid={x}; __sdcfduid={y}"
-
-    }
-    body = {
-    	'fingerprint':fingerprint,
+        "Cookie": f"__dcfduid={x}; __sdcfduid={y}",
+		}
+	body={
+		'fingerprint':fingerprint,
 		'username':user,
+		'email':email,
 		'password':'PassTh1s!',
 		'consent':'true',
-		'date_of_birth':'2003-04-13'
+		'date_of_birth':'2003-04-13',
 		"gift_code_sku_id": "",
-		"captcha_key": captchakey,
+		"captcha_key": captchakey
+		}
 
-	}
-	req = httpx.post("https://discord.com/api/v9/auth/register",headers=headers2,json=body, timeout=10)
+	req = httpx.post("https://discord.com/api/v9/auth/register",headers=header2,json=body, timeout=10)
 
-	token = req.json()['token']
-
-	if req.response == 200:
-		print(token)
+	try:
+		token = req.json()['token']
+	except KeyError:
+		pass
 	else:
-		break
+		print(token)
 
-'''
-
-
-
-
-create()
+total = int(input('How many accounts? '))
+print('\n')
+for x in range(total):
+	create()
+print('\n')
+print(f'operation complete')
