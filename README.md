@@ -18,12 +18,12 @@ pip install -r requirements.txt
 3. Run main.py
 
 ```python
-How many accounts? 2
+'How many accounts?' 2
 
-OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM
-OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM
+'OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM'
+'OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM'
 
-Operation Complete
+'Operation Complete'
 
 
 
