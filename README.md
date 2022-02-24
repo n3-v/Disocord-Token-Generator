@@ -37,6 +37,8 @@ bypassing captcha...
 - Better error handling
 - Proxy Support(NEEDED)
 - Threading Support
+## Cretits
+-https://github.com/Aniell4(hcapbypass)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
