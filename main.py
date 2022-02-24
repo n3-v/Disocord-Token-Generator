@@ -1,127 +1,154 @@
-import regex as re
-import httpx,time,random
-from threading import Thread
+import time,httpx,re,json
+from random import randint as r
 from faker import Faker
-from concurrent.futures import ThreadPoolExecutor
+from hcapbypass import bypass
 fake = Faker()
-
-apikey = ''
-catchall = ''
+Xsuper = '4D042846D708CA694E202DE23AB2EFBD60518747C9888E1134A1C8FC914E3CE56F48AFA0F6ADD111A3F8D543AD07FA03E8875E0E81A3AA99E447A9616A0ECA64EE7B7C6AAB699D09549CBF6B480B72E9BA332D9FFCB0FC5346C58EA32A9B813C37A64A177F6CB0E864DDE3DFB347DE57292BF979BEFAC04ED151C6D8E2303ECB2723044ABB561F24EF3C6520EFFFFA7A66EC716ED08AB7454CFB5CDDF600EED5B22A390040E3359288EB767709CE4BBD79BC791B02C6D3B10A6FDF6E10BFACE2B2D60BB4D692DDDDD1F9F12A4CAABDF9F92C67EC89EF75D10843256D3877F5E3DA5F71641C548BDD7C9C4AD9EF6FE0EE3F3CBE20B9EB3621383FAEC510EF0AFD0F21CA5D5D3320B9725A45A7C2D362861DD4A22C9B3970C6B271D9B14157218ABA63AB7D5ADE34E171FAE6059549B5EB16B50FB23D7F23AC49F14B4C4171171C8F403BB3F26686156983BAF7370526F4A6345D83D8C1CAD8086759BABA0110780DAE6A569EBD7503D504D23B5F7D56ED933507135C2EE93D348C691AB4BC3393CAA526638A119E51844BFB5DAC956D6498BEE540A4DD7A51A64761225B5AE479BCEC59536C89489D5FA64BA56A1C0569FF8D05CBB8A29C0B88D13B385CF23B252CBFE34364547909215E7E2F7478CD3F4F050E0755953F6BCFF7BF2885EDB39E6C310DD7E1C59F127EB01A03A233EE1AC02BD1EA8D6D9D0E0635CEDCD9A4F75C5BC6498F41D81012D990077032AD7BB40CF4C78FB15B6EBFE6691C5DB27820D734A2DE28C3C1B368DB8BA8F40F71F630238FC932D42C5DF2288E099BBE964BD47F1F9729AFF11B03AEA0D8607784BF396FCB6108DDB49D51FF5A4179CE29CE9FF853A645'
 
 
 
-def create():
-    user=fake.first_name() + str(random.randint(10,99))
-    email = user + '@' + catchall
+
+class gen():
+	def __init__(self):
+		pass
 
 
-    with open('proxies.txt', 'r') as f:
-        prox = random.choice(f.readlines()).strip()
-        unfm = prox.split(':')
-        user = unfm[2]
-        passw = unfm[3]
-        ip = unfm[0]
-        port = unfm[1]
 
-        fproxy = f'http://{user}:{passw}@{ip}:{port}'
-        print(fproxy)
-        proxies = {
-            "http://":fproxy
-        }
-    try:
-        header1 = {
-	        "Host": "discord.com",
-	        "Connection": "keep-alive",
-	        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
-	        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-	        "Sec-Fetch-Site": "none",
-	        "Sec-Fetch-Mode": "navigate",
-	        "Sec-Fetch-User": "?1",
-	        "Sec-Fetch-Dest": "document",
-	        "sec-ch-ua": '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
-	        "sec-ch-ua-mobile": "?0",
-	        "Upgrade-Insecure-Requests": "1",
-	        "Accept-Encoding": "gzip, deflate, br",
-	        "Accept-Language": "en-us,en;q=0.9",
-	    }
-        cookies = httpx.get("https://discord.com/register", headers=header1,proxies=proxies).headers['set-cookie']
+	def register(x,y,fingerprint,username,email,captchakey):
+		
 
-        x = re.findall(r'__dcfduid=(\w+);', cookies)[0]
-        y = re.findall(r'sdcfduid=(\w+);', cookies)[0]
-        res = httpx.get("https://discord.com/api/v9/experiments", timeout=10)
-        if res.text == "":
-            raise Exception
-        else:
-            fingerprint = res.json()['fingerprint']
-        sendreq = httpx.post(f'http://2captcha.com/in.php?key={apikey}&method=hcaptcha&sitekey=4c672d35-0701-42b2-88c3-78380b0db560&pageurl=http://discord.com&json=1', proxies=proxies)
-        solverid = sendreq.json()['request']
 
-        time.sleep(10)
-        while True:
-            try:
-                captchares = httpx.get(f'http://2captcha.com/res.php?key={apikey}&action=get&id={solverid}&json=1')
-                capstatus = captchares.json()['status']
-                if capstatus == 0:
-                    raise Exception
-                else:
-                    captchakey = captchares.json()['request']
+		headers={
+			"Host": "discord.com",
+			"Connection": "keep-alive",
+			"sec-ch-ua": '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+			"X-Super-Properties": Xsuper,
+			"X-Fingerprint": fingerprint,
+			"Accept-Language": "en-US",
+			"sec-ch-ua-mobile": "?0",
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+			"Content-Type": "application/json",
+			"Authorization": "undefined",
+			"Accept": "*/*",
+			"Origin": "https://discord.com",
+			"Sec-Fetch-Site": "same-origin",
+			"Sec-Fetch-Mode": "cors",
+			"Sec-Fetch-Dest": "empty",
+			"Referer": "https://discord.com/register",
+			"X-Debug-Options": "bugReporterEnabled",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Cookie": f"__dcfduid={x}; __sdcfduid={y}",
 
-            except Exception:
-                    time.sleep(5)
-            else:
-                break
+		}
 
-        header2={
-
-	        "Host": "discord.com",
-	        "Connection": "keep-alive",
-	        "sec-ch-ua": '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
-	        "X-Super-Properties": "eyJvcyI6Ik1hYyBPUyBYIiwiYnJvd3NlciI6IkNocm9tZSIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS85Mi4wLjQ1MTUuMTMxIFNhZmFyaS81MzcuMzYiLCJicm93c2VyX3ZlcnNpb24iOiI5Mi4wLjQ1MTUuMTMxIiwib3NfdmVyc2lvbiI6IjEwLjE1LjciLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6OTI3OTIsImNsaWVudF9ldmVudF9zb3VyY2UiOm51bGx9",
-	        "X-Fingerprint": fingerprint,
-	        "Accept-Language": "en-US",
-	        "sec-ch-ua-mobile": "?0",
-	        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
-	        "Content-Type": "application/json",
-	        "Authorization": "undefined",
-	        "Accept": "*/*",
-	        "Origin": "https://discord.com",
-	        "Sec-Fetch-Site": "same-origin",
-	        "Sec-Fetch-Mode": "cors",
-	        "Sec-Fetch-Dest": "empty",
-	        "Referer": "https://discord.com/register",
-	        "X-Debug-Options": "bugReporterEnabled",
-	        "Accept-Encoding": "gzip, deflate, br",
-	        "Cookie": f"__dcfduid={x}; __sdcfduid={y}",
-			}
-        body={
+		body={
 			'fingerprint':fingerprint,
-			'username':user,
+			'username':username,
 			'email':email,
 			'password':'PassTh1s!',
 			'consent':'true',
 			'date_of_birth':'2003-04-13',
 			"gift_code_sku_id": "",
 			"captcha_key": captchakey
-			}
-        req = httpx.post("https://discord.com/api/v9/auth/register",headers=header2,json=body,proxies=proxies,timeout=30)
 
-        try:
-            token = req.json()['token']
-        except KeyError:
-            pass
-        else:
-            print(token)
+		}
+
+		r = httpx.post("https://discord.com/api/v9/auth/register",headers=headers,json=body,timeout=30)
 
 
-    except Exception as e:
-        print(e)
+		while True:
+			try:
+				token = r.json()['token']
+				
+			except KeyError:
+				print(r.json())
+			else:
+				return token
+		
+		
 
 
 
-print('\n')
-if __name__ == '__main__':
-	tasks = int(input('Threads: '))
-	threads = []
-	with ThreadPoolExecutor(max_workers=tasks) as y:
-		for x in range(tasks):
-			y.submit(create())
+
+	def captcha():
+		print('bypassing captcha...')
+		key = bypass("4c672d35-0701-42b2-88c3-78380b0db560", "discord.com")
+		return key
+
+
+
+	def fingerprint():
+		
+		r = httpx.get("https://discord.com/api/v9/experiments", timeout=10)
+		if r.text == "":
+			print('Failed to get fingerprint')
+			raise Exception
+		else:
+			fingerprint = r.json()['fingerprint']
+			
+			return fingerprint
+
+
+	def cookies():
+		headers={
+			"Host": "discord.com",
+			"Connection": "keep-alive",
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+			"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+			"Sec-Fetch-Site": "none",
+			"Sec-Fetch-Mode": "navigate",
+			"Sec-Fetch-User": "?1",
+			"Sec-Fetch-Dest": "document",
+			"sec-ch-ua": '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+			"sec-ch-ua-mobile": "?0",
+			"Upgrade-Insecure-Requests": "1",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Accept-Language": "en-us,en;q=0.9"
+		}
+
+		r = httpx.get("https://discord.com/register", headers=headers).headers['set-cookie']
+		
+
+		x = re.findall(r'__dcfduid=(\w+);', r)[0]
+		y = re.findall(r'sdcfduid=(\w+);', r)[0]
+
+		if x and y:
+			return x,y
+			
+	
+
+
+
+
+
+class run:
+	def __init__(self):
+		pass
+	
+
+	def start(id):
+		username = fake.first_name() + str(r(10,99))
+		email = username + '@idklol.com'
+		print(f'{[id]} Getting Fingerprint')
+		x,y = gen.cookies()
+		fingerprint = gen.fingerprint()
+		print(f'{[id]} Got Fingerprint')
+		captchakey = gen.captcha()
+		print(f'{[id]} Bypassed Captcha')
+		unverified = gen.register(x,y,fingerprint,username,email,captchakey)
+		if unverified:
+			print(f'{[id]} Token: {unverified}')
+
+		
+
+
+
+
+if __name__ == "__main__":
+	amt = int(input('Tasks: '))
+	amt += 1
+	for x in range(1,amt):
+		run.start(x)
+	
+
+	
