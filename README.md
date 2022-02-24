@@ -13,22 +13,29 @@ pip install -r requirements.txt
 
 
 ## Usage
-1. Replace 'apikey' with your [2captcha](https://2captcha.com/enterpage) api key
-2. Replace 'catchall' with your catchall
-3. Paste your proxies into proxies.txt(ip:port:user:pass)
-3. Run main.py
+On Windows:
+```bash
+python main.py
+```
+On Mac:
+```bash
+python3 main.py
+```
 
-```python
-How many accounts? 2
 
-OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM
-OTM3MTc4Njk2MDAxOTQ1NjMw.YfX9xA.MUnEzrf6Nm-iREHmVjI96YRYMSM
+```bash
+Tasks: 1
+[1] Getting Fingerprint
+[1] Got Fingerprint
+bypassing captcha...
+[1] Bypassed Captcha
+[1] Token: OTQ2NDM5Njk5ODY0NjMzNDc1.Yheuqg.B8HsNs2AmKbWwTFYSM7fRBefOyQ
 
 ```
 
 ## Working on
 - Better error handling
-- Proxy Support(added)
+- Proxy Support(NEEDED)
 - Threading Support
 
 ## License
