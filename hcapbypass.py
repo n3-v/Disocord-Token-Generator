@@ -109,9 +109,9 @@ def N_Data(req) -> str:
             print(e)
             return False
 
-def REQ_Data(host, sitekey):
+def REQ_Data(host, sitekey,proxy):
         try:
-            r = httpx.get(f"https://hcaptcha.com/checksiteconfig?host={host}&sitekey={sitekey}&sc=1&swa=1", headers=headers,timeout=4)
+            r = httpx.get(f"https://hcaptcha.com/checksiteconfig?host={host}&sitekey={sitekey}&sc=1&swa=1", headers=headers,timeout=5,proxies=proxy)
             if r.json()["pass"]:
                 return r.json()["c"]
             else:
@@ -119,7 +119,7 @@ def REQ_Data(host, sitekey):
         except :
             return False
 
-def Get_Captcha(host, sitekey, n, req):
+def Get_Captcha(host, sitekey, n, req,proxy):
 
         try:
             json = {
@@ -152,28 +152,42 @@ def Get_Captcha(host, sitekey, n, req):
             }
 
             cookies = {"hc_accessibility": "wAHi1MOKSosBLK6HVeeBzfbaQknsYZOOkIB/s3TXYK3NzxiIzJ3HzV6uQOMlyTSI1GIVz9AazrmLIgl7NAufVofFaQDhnTL9CNyhqVwlaibJmi6mQrr377HrCaTI7VCWxo1kniMjJDOEz4X29+NH5awd4jH6hPyKIOZhNjWuMrNSKu6ZFLuRSgOiy4c+0idoOSRYiOiX9HK8KkQaHk8EfkR05vRrjPBkaNVKqg1RcpcfREQ06gIS9YzkItTt+2z/aHHZU1rAdJTyJ8oijsq2Mis23zqp9EWQ52H4oWEstionkOct9Z8NgybESmrdNsowi3NXNOoVwWoU4ZEwGCbjG8eO+2HnSP1vPKUi6tT7Z39E2eCMAJJDn9dyenkOuFRcOMmFiMIIIFsTUniyM7EhvSWxWDFvI+4zbx/+TP5pQClZJcLbXinpw1SMk3GVT3S6EG2n/DyLQ0/p3+/CJYbr7sVjdeRLQBGyCMvaOPy+dvaRH+mszz58EoV35sq9835SPRD17jNym9E=UCa12gEu9VIPScd9"}
-            r = httpx.post(f"https://hcaptcha.com/getcaptcha?s={sitekey}",cookies=cookies, data=data, headers=headers, timeout=4)
+            tries = 0
+            while True:
+                try:
+                    r = httpx.post(f"https://hcaptcha.com/getcaptcha?s={sitekey}",cookies=cookies, data=data, headers=headers, timeout=4,proxies=proxy)
 
-            res = r.text
+                    res = r.text
 
-            x = re.findall(':\W(E0_\w+.\w+.\w+-\w+)', res)[0]
+                    x = re.findall(':\W(E0_\w+.\w+.\w+-\w+)', res)[0]
+                except:
+                    tries +=1
+                    if tries > 5:
+                        return('Failed to bypass captcha after 5 tries')
+                    else:
+                        pass
+                else:
+                    return x
+                    
+                        
+
             
 
-            return x
+            
         except Exception as e:
             print(e)
             return False
 
-def bypass(sitekey, host):
+def bypass(sitekey, host,proxy):
     try :
         
-        req = REQ_Data(sitekey=sitekey, host=host)
+        req = REQ_Data(sitekey=sitekey, host=host,proxy=proxy)
         
         req["type"] = "hsl"
         
         n = N_Data(req["req"])
         
-        res = Get_Captcha(sitekey=sitekey, host=host,n=n, req=req)
+        res = Get_Captcha(sitekey=sitekey, host=host,n=n, req=req,proxy=proxy)
         
         if "generated_pass_UUID" in res:
             captcha = res["generated_pass_UUID"]
