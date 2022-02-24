@@ -1,6 +1,9 @@
 # Discord Token Generator
 
 Uses Python and httpx library to create discord accounts
+- Hcaptcha Bypass, No need to pay for captcha services
+- Proxy Support added, paste your proxies into "proxies.txt"
+
 
 
 ## Installation
@@ -35,10 +38,9 @@ bypassing captcha...
 
 ## Working on
 - Better error handling
-- Proxy Support(NEEDED)
 - Threading Support
 ## Cretits
--https://github.com/Aniell4 (hcapbypass)
+- https://github.com/Aniell4 (hcapbypass)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
