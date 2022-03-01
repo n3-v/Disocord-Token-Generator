@@ -39,7 +39,7 @@ bypassing captcha...
 ## Working on
 - Better error handling
 - Threading Support
-## Cretits
+## Credits
 - https://github.com/Aniell4 (hcapbypass)
 
 ## License
