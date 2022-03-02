@@ -1,4 +1,4 @@
-import time,httpx,re,json,random,websocket
+import time,httpx,re,json,random
 from random import randint as r
 from faker import Faker
 from hcapbypass import bypass
@@ -20,7 +20,7 @@ class gen():
 
 
 
-	def register(x,y,fingerprint,username,email,captchakey,proxy,id):
+	def register(x,y,fingerprint,username,email,captchakey,proxies,id):
 		
 
 
@@ -67,14 +67,14 @@ class gen():
 		while True:
 
 			try:
-				r = httpx.post("https://discord.com/api/v9/auth/register",headers=headers,json=body,timeout=30,proxies=proxy)
+				r = httpx.post("https://discord.com/api/v9/auth/register",headers=headers,json=body,timeout=30,proxies=proxies)
 				token = r.json()['token']
 				
 			except KeyError:
 				return('err')
 
 				time.sleep(60)
-				register(x,y,fingerprint,username,email,captchakey,proxy,id)
+				register(x,y,fingerprint,username,email,captchakey,proxies,id)
 				
 			else:
 				return token
@@ -84,17 +84,17 @@ class gen():
 
 
 
-	def captcha(proxy,id):
+	def captcha(proxies,id):
 		print(f'{[id]} Attempting to Bypass Captcha')
-		key = bypass("4c672d35-0701-42b2-88c3-78380b0db560", "discord.com", proxy)
+		key = bypass("4c672d35-0701-42b2-88c3-78380b0db560", "discord.com", proxies)
 		return key
 
 
 
-	def fingerprint(proxy,id):
+	def fingerprint(proxies,id):
 		print(f'{[id]} Generating Fingerprint...')
 		
-		r = httpx.get("https://discord.com/api/v9/experiments", timeout=10,proxies=proxy)
+		r = httpx.get("https://discord.com/api/v9/experiments", timeout=10,proxies=proxies)
 
 		if r.text == "":
 			print(f'{[id]}Failed to get fingerprint')
@@ -106,7 +106,7 @@ class gen():
 			return fingerprint
 
 
-	def cookies(proxy):
+	def cookies(proxies):
 		headers={
 			"Host": "discord.com",
 			"Connection": "keep-alive",
@@ -123,7 +123,7 @@ class gen():
 			"Accept-Language": "en-us,en;q=0.9"
 		}
 
-		r = httpx.get("https://discord.com/register", headers=headers,proxies=proxy).headers['set-cookie']
+		r = httpx.get("https://discord.com/register", headers=headers,proxies=proxies).headers['set-cookie']
 		
 
 		x = re.findall(r'__dcfduid=(\w+);', r)[0]
@@ -134,18 +134,24 @@ class gen():
 
 	
 	def proxy():
+		proxy = True
+		if proxy == True:
+			pass
+		elif proxy == False:
+			proxies = {
+				"all://": None
+			}
+			return proxies
 		x = open('proxies.txt','r')
 		f = random.choice(x.readlines()).strip()
 		ip,port,user,passw = f.split(':')
 		fproxy = f'http://{user}:{passw}@{ip}:{port}'
-		proxy = {
-            "http://":fproxy
+
+		proxies = {
+		"http://": fproxy,
+		"https://": fproxy
 		}
-		return proxy		
-	
-
-
-
+		return proxies		
 
 
 class run:
@@ -155,44 +161,33 @@ class run:
 
 	def start(id):
 		
-		proxy = gen.proxy()
+		proxies = gen.proxy()
 		username = fake.first_name() + str(r(10,99))
 		email = username + '@idklol.com'
-		x,y = gen.cookies(proxy)
-		fingerprint = gen.fingerprint(proxy,id)
-		
-		
-		captchakey = gen.captcha(proxy,id)
+		x,y = gen.cookies(proxies)
+		fingerprint = gen.fingerprint(proxies,id)
+		captchakey = gen.captcha(proxies,id)
+
 		if captchakey:
 			print(f'{[id]} Bypassed Captcha!')
 		else:
 			print(f'{[id]} Failed to pass captcha')
 
-		unverified = gen.register(x,y,fingerprint,username,email,captchakey,proxy,id)
+		unverified = gen.register(x,y,fingerprint,username,email,captchakey,proxies,id)
 		if unverified:
 			while True:
 				if unverified == 'err':
-					print(f'{[id]} Rate Limited! Retrying in 1min')
-					time.sleep(60)
-					unverified = gen.register(x,y,fingerprint,username,email,captchakey,proxy,id)
+					print(f'{[id]} Rate Limited! Rotating Proxy')
+					time.sleep(5)
+					proxies = gen.proxy()
+					unverified = gen.register(x,y,fingerprint,username,email,captchakey,proxies,id)
 				else:
 					print(f'{[id]} Token: {unverified}')
 					break
 
 
-
-
-			
-		
-
-		
-
-
-
-
 if __name__ == "__main__":
 	amt = int(input('Tasks: '))
-	amt += 1
 	for i in range(amt):
 		run.start(i)
 
