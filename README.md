@@ -2,7 +2,7 @@
 
 Uses Python and httpx library to create discord accounts
 - Hcaptcha Bypass, No need to pay for captcha services 😂 
-- Proxy Support added, paste your proxies into "proxies.txt"
+- Proxy Support added, paste your proxies into "proxies.txt" (user:pass only)
 
 
 
@@ -27,18 +27,17 @@ python3 main.py
 
 
 ```bash
-Tasks: 1
-[1] Getting Fingerprint
-[1] Got Fingerprint
-bypassing captcha...
-[1] Bypassed Captcha
-[1] Token: OTQ2NDM5Njk5ODY0NjMzNDc1.Yheuqg.B8HsNs2AmKbWwTFYSM7fRBefOyQ
+Initializing task
+Fetching fingerprint
+Bypassing captcha
+Registring account
+Token: MTAyMDUzNzM4MjE5NTQzNzYxOQ.G_KG5f.Q0-Z8MqSzQUHyqerHkSrgGZnvN5tIbYVOOVV_Y
 
 ```
 
 ## Working on
-- Better error handling
-- Threading Support
+- Solution for locked accounts
+
 ## Credits
 - https://github.com/Aniell4 (hcapbypass)
 
