@@ -63,11 +63,11 @@ class discord:
                     self.step = "register"
             
             elif self.step == "register":
-                print("Registring account")
+                print("Registering account")
                 try:
                     self.token = self.register()
                 except:
-                    print("Registring account")
+                    print("Errpr registering account")
                     time.sleep(5)
                 else:
                     break

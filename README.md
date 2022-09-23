@@ -30,7 +30,7 @@ python3 main.py
 Initializing task
 Fetching fingerprint
 Bypassing captcha
-Registring account
+Registering account
 Token: MTAyMDUzNzM4MjE5NTQzNzYxOQ.G_KG5f.Q0-Z8MqSzQUHyqerHkSrgGZnvN5tIbYVOOVV_Y
 
 ```
